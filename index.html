@@ -1,0 +1,199 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>guacamole远程操作数据库</title>
+<script src="jquery.min.js"></script>
+<script src="index.js"></script>
+<script type="text/javascript" language="javascript">
+	var tokens;
+	//登录api
+    function getGuacamole(){
+    var ajaxURL = "http://10.128.0.211:80/api/tokens";
+    $.ajax({
+        type: "post",//方法类型
+        dataType: "json",//预期服务器返回的数据类型
+        url:ajaxURL,
+		contentType:"application/x-www-form-urlencoded",  
+		data:"username=guacadmin&password=guacadmin",  
+//		headers: { 
+//		"Access-Control-Allow-Origin" : "*"
+//		},
+//		contentType:"application/x-www-form-urlencoded;",
+//		async: true,
+//		data:JSON.stringify(userparams),
+//		data:$('#form1').serialize(),
+//		beforeSend: function(request) {
+//		request.setRequestHeader("Content-type", "application/x-www-form-urlencoded"); 
+//		request.setRequestHeader("Access-Control-Allow-Origin", "*");  
+//		request.setRequestHeader("Accept", "application/json, text/plain, */*"); 
+		//通过这种方法可以设置自定义HTTP头字段
+//		},
+        success: function(result){
+			console.log(result);
+           tokens = result.authToken;
+		   getConnections(tokens);
+		   
+           
+        },
+        error: function(result){
+            console.log(result);
+        },
+    });
+
+}
+	//获取已存在的连接
+	function getConnections(tokens){
+		//获取连接的地址
+		var ajaxURL = "http://10.128.0.211:80/api/session/data/mysql/connectionGroups/ROOT/tree";
+		// 创建连接的地址  "http://10.128.0.211:8080/api/session/data/mysql/connections";
+		// POST Content-Type:application/json;charset=UTF-8
+		// ssh的提交参数的json
+		// {
+		// "parentIdentifier":"ROOT",
+		// "name":"10.128.0.211",
+		// "protocol":"ssh",
+		// 	"parameters":{
+		// 	"port":"22",
+		// 	"read-only":"",
+		// 	"swap-red-blue":"",
+		// 	"cursor":"",
+		// 	"color-depth":"",
+		// 	"clipboard-encoding":"",
+		// 	"dest-port":"",
+		// 	"create-recording-path":"",
+		// 	"enable-sftp":"","sftp-port":"",
+		// 	"sftp-server-alive-interval":"",
+		// 	"enable-audio":"",
+		// 	"color-scheme":"",
+		// 	"font-size":"",
+		// 	"server-alive-interval":"",
+		// 	"create-typescript-path":"",
+		// 	"hostname":"10.128.0.211",
+		// 	"username":"root",
+		// 	"password":"tekinfo.net"
+		// 	},
+		// 	"attributes":{
+		// 		"max-connections":"",
+		// 		"max-connections-per-user":"",
+		// 		"weight":"","failover-only":"",
+		// 		"guacd-port":"",
+		// 		"guacd-encryption":""
+		// 		}
+		// }
+		// rdp的提交参数的json
+		//{
+		//"parentIdentifier":"ROOT",
+		//"name":"10.128.0.211111",
+		//"protocol":"rdp",
+		//	"parameters":{
+		//		"port":"3389",
+		//		"read-only":"",
+		//		"swap-red-blue":"",
+		//		"cursor":"",
+		//		"color-depth":"",
+		//		"clipboard-encoding":"",
+		//		"dest-port":"",
+		//		"create-recording-path":"",
+		//		"enable-sftp":"",
+		//		"sftp-port":"",
+		//		"sftp-server-alive-interval":"",
+		//		"enable-audio":"",
+		//		"security":"any",
+		//		"disable-auth":"",
+		//		"ignore-cert":"true",
+		//		"gateway-port":"",
+		//		"server-layout":"",
+		//		"console":"",
+		//		"width":"",
+		//		"height":"",
+		//		"dpi":"",
+		//		"resize-method":"",
+		//		"console-audio":"",
+		//		"disable-audio":"",
+		//		"enable-audio-input":"",
+		//		"enable-printing":"",
+		//		"enable-drive":"",
+		//		"create-drive-path":"",
+		//		"enable-wallpaper":"",
+		//		"enable-theming":"",
+		//		"enable-font-smoothing":"",
+		//		"enable-full-window-drag":"",
+		//		"enable-desktop-composition":"",
+		//		"enable-menu-animations":"",
+		//		"preconnection-id":"",
+		//		"hostname":"10.128.0.211",
+		//		"username":"zhangbin",
+		//		"password":"tekinfo.net"
+		//		},
+		//	"attributes":{
+		//		"max-connections":"",
+		//		"max-connections-per-user":"",
+		//		"weight":"",
+		//		"failover-only":"",
+		//		"guacd-port":"",
+		//		"guacd-encryption":""
+		//		}
+		//	}
+		$.ajax({
+        type: "get",//方法类型
+        dataType: "json",//预期服务器返回的数据类型
+        url:ajaxURL,
+//		contentType:"application/x-www-form-urlencoded",  
+		data:"token="+tokens,  
+		headers: { 
+		'Accept':'application/json, text/javascript, */*'
+		},
+//		contentType:"application/x-www-form-urlencoded;",
+//		async: true,
+//		data:JSON.stringify(userparams),
+//		data:$('#form1').serialize(),
+//		beforeSend: function(request) {
+//		request.setRequestHeader("Content-type", "application/x-www-form-urlencoded"); 
+//		request.setRequestHeader("Access-Control-Allow-Origin", "*");  
+//		request.setRequestHeader("Accept", "application/json, text/plain, */*"); 
+		//通过这种方法可以设置自定义HTTP头字段
+//		},
+        success: function(result){
+			console.log(result);
+           
+        },
+        error: function(result){
+            console.log(result);
+        },
+    });
+	}
+getGuacamole();
+</script>
+</head>
+
+<body>
+<form action="addHosts" method="post">
+<input type="text" name="connection_name"/>连接名</br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<select type="text" name="protocol">
+<option value="ssh">ssh</option>
+<option value="rdp">rdp</option>
+<option value="vnc">vnc</option>
+<option value="telnet">telnet</option>
+</select>连接方式</br>
+<input type="text" name="hostname"/>主机名</br>
+<input type="text" name="port"/>端口</br>
+<input type="text" name="username"/>用户名</br>
+<input type="text" name="password"/>密码</br>
+<button type="submit">提交</button>
+</form>
+</br>
+<form action="getHosts" method="post">
+<input type="text" name="connection_name"/>连接名</br>
+<button type="submit">提交</button>
+</form>
+
+<form id="form1" action="##" method="post">
+<input type="text" name="username"/>连接名</br>
+<input type="password" name="password"/>连接名</br>
+<button type="submit" onclick=";">提交</button>
+</form>
+
+</body>
+</html>
